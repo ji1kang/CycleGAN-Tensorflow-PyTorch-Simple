@@ -8,15 +8,15 @@ Directories are as follows:
     datasets/<name>/testA     ... test B images
     datasets/<name>/testA     ... train A images
     datasets/<name>/testA     ... train B images
-    checkpoint/               ... model
+    checkpoints/               ... model
     test/                     ... model output
 """
 
 import os
 import shutil
 
-GIT_REPO_URL = "https://github.com/nortd/CycleGAN_Tensorlayer.git"
-GIT_REPO_NAME = "CycleGAN_Tensorlayer"
+GIT_REPO_URL = "https://github.com/nortd/CycleGAN-Tensorflow-PyTorch-Simple.git"
+GIT_REPO_NAME = "CycleGAN-Tensorflow-PyTorch-Simple"
 
 project = testA = testB = trainA = trainB = model = output = ""
 
