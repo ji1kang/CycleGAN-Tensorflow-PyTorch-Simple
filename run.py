@@ -18,7 +18,7 @@ import imageslicer
 
 # PROJECT = "enhance2"
 PROJECT = "odyssey2ghost"
-VIDEO_A = "../../../../a-space-odyssey.mp4"
+VIDEO_A = "../../../../a-space-odyssey-hd.mp4"
 VIDEO_B = "../../../../ghost-in-the-shell.mp4"
 # TRAINGVIDEO_FPS = "1/4"
 TRAINGVIDEO_FPS = "1/10"
@@ -86,10 +86,14 @@ args = parser.parse_args()
 
 
 if args.cmd == 'extract':
-    delete_files(path.trainA)
-    delete_files(path.trainB)
-    video_extract(VIDEO_A, path.trainA, TRAINGVIDEO_FPS, size=args.size, intime="00:20:00", duration="01:00:00")
-    video_extract(VIDEO_B, path.trainB, TRAINGVIDEO_FPS, size=args.size, intime="00:15:00", duration="01:00:00")
+    delete_files(path.rawA)
+    video_extract(VIDEO_A, path.rawA, 24, size=args.size, intime="00:50:00", duration="00:04:40")
+
+    # delete_files(path.trainA)
+    # delete_files(path.trainB)
+    # video_extract(VIDEO_A, path.trainA, TRAINGVIDEO_FPS, size=args.size, intime="00:20:00", duration="01:00:00")
+    # video_extract(VIDEO_B, path.trainB, TRAINGVIDEO_FPS, size=args.size, intime="00:15:00", duration="01:00:00")
+
     # for img in glob.glob(os.path.join(path.trainA,"*.jpg")):
     #     shutil.copy(img, path.rawA)
     # for img in glob.glob(os.path.join(path.trainB,"*.jpg")):
