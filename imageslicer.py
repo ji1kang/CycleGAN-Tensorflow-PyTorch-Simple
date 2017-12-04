@@ -5,6 +5,7 @@ import glob
 from math import sqrt, ceil, floor
 
 from PIL import Image
+from PIL import ImageOps
 
 
 def calc_columns_rows(n):
@@ -48,8 +49,9 @@ def joinall(path, save_path=None):
     for img in glob.glob(os.path.join(path,"*.jpg")):
         basename = os.path.splitext(os.path.basename(img))[0]
         parts = basename.split('_')
-        if len(parts) == 3 and parts[0] not in names:
-            names[parts[0]] = None
+        pre = "_".join(basename.split('_')[:-2])
+        if pre not in names:
+            names[pre] = None
 
     for name in names.keys():
         tiles = glob.glob(os.path.join(path,name+"*.jpg"))
@@ -57,8 +59,10 @@ def joinall(path, save_path=None):
 
 
 
-def slice(filename, nTiles, save_path=None):
-    """Split an image into a specified number of tiles."""
+def slice(filename, nTiles, save_path=None, fit_size=None, pattern="image%05d.jpg"):
+    """Split an image into a specified number of tiles.
+    fit_size ... (w,h) a size tuple
+    """
     directory = os.path.dirname(filename)
     basename = os.path.splitext(os.path.basename(filename))[0]
     format = os.path.splitext(os.path.basename(filename))[1][1:]
@@ -66,6 +70,8 @@ def slice(filename, nTiles, save_path=None):
         save_path = directory
 
     im = Image.open(filename)
+    if fit_size:
+        im = ImageOps.fit(im, fit_size, method=Image.BICUBIC)
 
     im_w, im_h = im.size
     columns, rows = calc_columns_rows(nTiles)
@@ -86,3 +92,10 @@ def slice(filename, nTiles, save_path=None):
 
             print "Saving tile %s" % (tilepath)
             image.save(tilepath)
+
+
+def sliceall(path, save_path, nTiles, fit_size=None, prefix="img%05d"):
+    for i, img in enumerate(glob.glob(os.path.join(path,"*.jpg"))):
+        newname = os.path.join(path, (prefix+'.jpg') % (i))
+        os.rename(img, newname)
+        imageslicer.slice(newname, nTiles=nTiles, save_path=save_path, fit_size=fit_size)
