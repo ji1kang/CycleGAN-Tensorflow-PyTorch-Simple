@@ -98,4 +98,4 @@ def sliceall(path, save_path, nTiles, fit_size=None, prefix="img%05d"):
     for i, img in enumerate(glob.glob(os.path.join(path,"*.jpg"))):
         newname = os.path.join(path, (prefix+'.jpg') % (i))
         os.rename(img, newname)
-        imageslicer.slice(newname, nTiles=nTiles, save_path=save_path, fit_size=fit_size)
+        slice(newname, nTiles=nTiles, save_path=save_path, fit_size=fit_size)

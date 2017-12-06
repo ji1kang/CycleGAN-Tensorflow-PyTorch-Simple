@@ -43,8 +43,8 @@ with tf.Session() as sess:
     a_list = glob('./datasets/' + dataset + '/testA/*.jpg')
     b_list = glob('./datasets/' + dataset + '/testB/*.jpg')
 
-    a_save_dir = './test_predictions/' + dataset + '/testA/'
-    b_save_dir = './test_predictions/' + dataset + '/testB/'
+    a_save_dir = './datasets/' + dataset + '/outA/'
+    b_save_dir = './datasets/' + dataset + '/outB/'
     utils.mkdir([a_save_dir, b_save_dir])
     # for i in range(len(a_list)):
     #     a_real_ipt = im.imresize(im.imread(a_list[i]), [crop_size, crop_size])

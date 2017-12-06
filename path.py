@@ -18,29 +18,28 @@ import shutil
 GIT_REPO_URL = "https://github.com/nortd/CycleGAN-Tensorflow-PyTorch-Simple.git"
 GIT_REPO_NAME = "CycleGAN-Tensorflow-PyTorch-Simple"
 
-project = testA = testB = trainA = trainB = model = output = ""
+dataset = testA = testB = trainA = trainB = model = ""
 outA = outB = outAjoint = outBjoint = rawA = rawB =""
 
 def init(project_name):
-    global project, testA, testB, trainA, trainB, model, output
+    global dataset, testA, testB, trainA, trainB, model, output
     global outA, outB, outAjoint, outBjoint, rawA, rawB
-    project = os.path.join('datasets', project_name)
-    rawA = os.path.join(project, 'rawA')
-    rawB = os.path.join(project, 'rawB')
-    testA = os.path.join(project, 'testA')
-    testB = os.path.join(project, 'testB')
-    trainA = os.path.join(project, 'trainA')
-    trainB = os.path.join(project, 'trainB')
-    model = 'checkpoints'
-    output = 'test_predictions'
-    outA = os.path.join(output, project_name, 'testA')
-    outB = os.path.join(output, project_name, 'testB')
-    outAjoint = os.path.join(output, project_name, 'testAjoint')
-    outBjoint = os.path.join(output, project_name, 'testBjoint')
+    dataset = os.path.join('datasets', project_name)
+    rawA = os.path.join(dataset, 'rawA')
+    rawB = os.path.join(dataset, 'rawB')
+    testA = os.path.join(dataset, 'testA')
+    testB = os.path.join(dataset, 'testB')
+    trainA = os.path.join(dataset, 'trainA')
+    trainB = os.path.join(dataset, 'trainB')
+    model = os.path.join('checkpoints',project_name)
+    outA = os.path.join(dataset, 'outA')
+    outB = os.path.join(dataset, 'outB')
+    outAjoint = os.path.join(dataset, 'outAjoint')
+    outBjoint = os.path.join(dataset, 'outBjoint')
 
     # create
-    if not os.path.exists(project):
-        os.mkdir(project)
+    if not os.path.exists(dataset):
+        os.mkdir(dataset)
     if not os.path.exists(rawA):
         os.mkdir(rawA)
     if not os.path.exists(rawB):
@@ -55,9 +54,6 @@ def init(project_name):
         os.mkdir(trainB)
     if not os.path.exists(model):
         os.mkdir(model)
-
-    if not os.path.exists(output):
-        os.mkdir(output)
     if not os.path.exists(outA):
         os.mkdir(outA)
     if not os.path.exists(outB):

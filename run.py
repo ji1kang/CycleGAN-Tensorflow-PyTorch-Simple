@@ -16,29 +16,10 @@ import path
 import vm
 import imageslicer
 
-# PROJECT = "enhance2"
-PROJECT = "odyssey2ghost"
+
 VIDEO_A = "../../../../a-space-odyssey-hd.mp4"
 VIDEO_B = "../../../../ghost-in-the-shell.mp4"
-# TRAINGVIDEO_FPS = "1/4"
-TRAINGVIDEO_FPS = "1/10"
 
-path.init(PROJECT)
-
-
-def push(project_name):
-    """Push training set to GPU_INSTANCE."""
-    cmd = """rsync -rcPz -e ssh --delete %s %s:/home/stefan/git/%s/datasets/%s/""" % \
-          (path.project, vm.GPU_INSTANCE, path.GIT_REPO_NAME, project_name)
-    os.system(cmd)
-
-
-def pull(project_name):
-    """Pull trained model from GPU_INSTANCE."""
-    cmd = """rsync -rcPz -e ssh --delete %s:/home/stefan/git/%s/%s/ %s""" % \
-          (vm.GPU_INSTANCE, path.GIT_REPO_NAME, path.model, path.model)
-    print(cmd)
-    os.system(cmd)
 
 
 
@@ -69,6 +50,12 @@ def video_make(img_path, video_path, fps=30, quality=15, pattern="img%d.jpg"):
     os.chdir(cwd)
 
 
+def enumerate_files(path, pattern="img%05d"):
+    for i,name in enumerate(os.listdir(path)):
+        fullname = os.path.join(path,name)
+        if os.path.isfile(fullname):
+            os.rename(fullname, os.path.join(path,(pattern+'.jpg')%(i)))
+
 def delete_files(path):
     for name in os.listdir(path):
         fullname = os.path.join(path,name)
@@ -77,12 +64,15 @@ def delete_files(path):
 
 
 parser = argparse.ArgumentParser()
-# parser.add_argument("project", choices=projects)
-parser.add_argument("cmd", choices=['extract', 'train', 'testprep', 'test', 'push', 'pull', 'tilejoin', 'videofy'])
+parser.add_argument("cmd")
 # parser.add_argument("--epochs", dest="epochs", type=int, default=200)
+parser.add_argument("--dataset", dest="dataset", default="porn2schiele")
 parser.add_argument("--size", dest="size", type=int, default=256)
-parser.add_argument("--tiles", dest="tiles", type=int, default=4)
+parser.add_argument("--tiles", dest="tiles", type=int, default=1)
+parser.add_argument("--fps", dest="fps", type=float, default=24)
 args = parser.parse_args()
+
+path.init(args.dataset)
 
 
 if args.cmd == 'extract':
@@ -98,8 +88,16 @@ if args.cmd == 'extract':
     #     shutil.copy(img, path.rawA)
     # for img in glob.glob(os.path.join(path.trainB,"*.jpg")):
     #     shutil.copy(img, path.rawB)
+elif args.cmd == 'cleanraw':
+    enumerate_files(path.rawA)
+    enumerate_files(path.rawB)
+elif args.cmd == 'trainprep':
+    delete_files(path.trainA)
+    imageslicer.sliceall(path.rawA, save_path=path.trainA, nTiles=args.tiles, fit_size=(args.size, args.size), prefix="img%05d")
+    delete_files(path.trainB)
+    imageslicer.sliceall(path.rawB, save_path=path.trainB, nTiles=args.tiles, fit_size=(args.size, args.size), prefix="img%05d")
 elif args.cmd == 'train':
-    os.system("python train.py --dataset=%s --load_size=%s --crop_size=%s" % (PROJECT, args.size, args.size))
+    os.system("python train.py --dataset=%s --load_size=%s --crop_size=%s" % (args.dataset, args.size, args.size))
 elif args.cmd == 'testprep':
     delete_files(path.testA)
     imageslicer.sliceall(path.rawA, save_path=path.testA, nTiles=args.tiles, fit_size=(args.size, args.size), prefix="img%05d")
@@ -107,13 +105,25 @@ elif args.cmd == 'testprep':
 elif args.cmd == 'test':
     delete_files(path.outA)
     delete_files(path.outB)
-    os.system("python test.py --dataset=%s --crop_size=%s" % (PROJECT, args.size))
-elif args.cmd == 'push':
-    push(PROJECT)
-elif args.cmd == 'pull':
-    pull(PROJECT)
+    os.system("python test.py --dataset=%s --crop_size=%s" % (args.dataset, args.size))
+elif args.cmd == 'pushdataset':
+    """Push training set to GPU_INSTANCE."""
+    cmd = """rsync -rcPz -e ssh --delete %s %s:/home/stefan/git/%s/%s/""" % \
+          (path.dataset, vm.GPU_INSTANCE, path.GIT_REPO_NAME, path.dataset)
+    os.system(cmd)
+elif args.cmd == 'pulldataset':
+    cmd = """rsync -rcPz -e ssh --delete %s:/home/stefan/git/%s/%s/ %s""" % \
+    (vm.GPU_INSTANCE, path.GIT_REPO_NAME, path.dataset, path.dataset)
+    print(cmd)
+    os.system(cmd)
+elif args.cmd == 'pullmodel':
+    """Pull trained model from GPU_INSTANCE."""
+    cmd = """rsync -rcPz -e ssh --delete %s:/home/stefan/git/%s/%s/ %s""" % \
+          (vm.GPU_INSTANCE, path.GIT_REPO_NAME, path.model, path.model)
+    print(cmd)
+    os.system(cmd)
 elif args.cmd == 'tilejoin':
     delete_files(path.outAjoint)
     imageslicer.joinall(path.outA, path.outAjoint)
 elif args.cmd == 'videofy':
-    video_make(path.outAjoint, "out.mp4", pattern="img%d.jpg")
+    video_make(path.outA, "../out.mp4", fps=args.fps, pattern="img%05d.jpg")
