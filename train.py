@@ -101,10 +101,10 @@ b_img_paths = glob('./datasets/' + dataset + '/trainB/*.jpg')
 a_data_pool = data.ImageData(sess, a_img_paths, batch_size, load_size=load_size, crop_size=crop_size)
 b_data_pool = data.ImageData(sess, b_img_paths, batch_size, load_size=load_size, crop_size=crop_size)
 
-a_test_img_paths = glob('./datasets/' + dataset + '/testA/*.jpg')
-b_test_img_paths = glob('./datasets/' + dataset + '/testB/*.jpg')
-a_test_pool = data.ImageData(sess, a_test_img_paths, batch_size, load_size=load_size, crop_size=crop_size)
-b_test_pool = data.ImageData(sess, b_test_img_paths, batch_size, load_size=load_size, crop_size=crop_size)
+# a_test_img_paths = glob('./datasets/' + dataset + '/testA/*.jpg')
+# b_test_img_paths = glob('./datasets/' + dataset + '/testB/*.jpg')
+# a_test_pool = data.ImageData(sess, a_test_img_paths, batch_size, load_size=load_size, crop_size=crop_size)
+# b_test_pool = data.ImageData(sess, b_test_img_paths, batch_size, load_size=load_size, crop_size=crop_size)
 
 a2b_pool = utils.ItemPool()
 b2a_pool = utils.ItemPool()
@@ -164,16 +164,16 @@ try:
             save_path = saver.save(sess, '%s/Epoch_(%d)_(%dof%d).ckpt' % (ckpt_dir, epoch, it_epoch, batch_epoch))
             print('Model saved in file: % s' % save_path)
 
-        # sample
-        if (it + 1) % 100 == 0:
-            a_real_ipt = a_test_pool.batch()
-            b_real_ipt = b_test_pool.batch()
-            [a2b_opt, a2b2a_opt, b2a_opt, b2a2b_opt] = sess.run([a2b, a2b2a, b2a, b2a2b], feed_dict={a_real: a_real_ipt, b_real: b_real_ipt})
-            sample_opt = np.concatenate((a_real_ipt, a2b_opt, a2b2a_opt, b_real_ipt, b2a_opt, b2a2b_opt), axis=0)
-
-            save_dir = './sample_images_while_training/' + dataset
-            utils.mkdir(save_dir + '/')
-            im.imwrite(im.immerge(sample_opt, 2, 3), '%s/Epoch_(%d)_(%dof%d).jpg' % (save_dir, epoch, it_epoch, batch_epoch))
+        # # sample
+        # if (it + 1) % 100 == 0:
+        #     a_real_ipt = a_test_pool.batch()
+        #     b_real_ipt = b_test_pool.batch()
+        #     [a2b_opt, a2b2a_opt, b2a_opt, b2a2b_opt] = sess.run([a2b, a2b2a, b2a, b2a2b], feed_dict={a_real: a_real_ipt, b_real: b_real_ipt})
+        #     sample_opt = np.concatenate((a_real_ipt, a2b_opt, a2b2a_opt, b_real_ipt, b2a_opt, b2a2b_opt), axis=0)
+        #
+        #     save_dir = './sample_images_while_training/' + dataset
+        #     utils.mkdir(save_dir + '/')
+        #     im.imwrite(im.immerge(sample_opt, 2, 3), '%s/Epoch_(%d)_(%dof%d).jpg' % (save_dir, epoch, it_epoch, batch_epoch))
 
 except Exception, e:
     coord.request_stop(e)
