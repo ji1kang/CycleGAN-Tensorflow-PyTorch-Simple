@@ -95,10 +95,13 @@ def call_remote_python(host, pythoncode):
     cmd = 'ssh %s "python -c \\\"%s\\\""' % (host, pythoncode)
     os.system(cmd)
 
-def call_remote_cmd_in_tmux(host, cmd):
+def call_remote_cmd_in_tmux(host, cmd, session_name=None):
     """Execute remote command inside tmux.
     NOTE: Only use single quotes in cmd."""
-    os.system('ssh %s "tmux new-session -d \\\"%s\\\""' % (host, cmd))
+    if session_name:
+        os.system('ssh %s "tmux new -s %s -d \\\"%s\\\""' % (host, session_name, cmd))
+    else:
+        os.system('ssh %s "tmux new-session -d \\\"%s\\\""' % (host, cmd))
 
 
 def replace_ip_in_ssh_config(file_path, host, new_ip):
