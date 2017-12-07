@@ -3,8 +3,8 @@ import os, argparse
 import path, vm
 
 
-datasets = ['cats2clouds', 'porn2figure', 'porn2flora', 'porn2miami', 'porn2schiele', 'selfies2astro', 'selfies2illust', 'selfies2renaiss']
-# datasets = ['cats2clouds']
+# datasets = ['cats2clouds', 'porn2figure', 'porn2flora', 'porn2miami', 'porn2schiele', 'selfies2astro', 'selfies2illust', 'selfies2renaiss']
+datasets = ['cats2clouds']
 
 
 def command(txt):
