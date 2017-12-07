@@ -160,7 +160,7 @@ try:
             print("Epoch: (%3d) (%5d/%5d)" % (epoch, it_epoch, batch_epoch))
 
         # save
-        if (it + 1) % 200 == 0:
+        if (it + 1) % 100 == 0:
             save_path = saver.save(sess, '%s/Epoch_(%d)_(%dof%d).ckpt' % (ckpt_dir, epoch, it_epoch, batch_epoch))
             print('Model saved in file: % s' % save_path)
 
