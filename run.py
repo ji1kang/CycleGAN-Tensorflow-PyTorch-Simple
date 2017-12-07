@@ -70,6 +70,7 @@ parser.add_argument("--dataset", dest="dataset", default="porn2schiele")
 parser.add_argument("--size", dest="size", type=int, default=256)
 parser.add_argument("--tiles", dest="tiles", type=int, default=1)
 parser.add_argument("--fps", dest="fps", type=float, default=24)
+parser.add_argument('--epoch', dest='epoch', type=int, default=200, help='# of epoch')
 args = parser.parse_args()
 
 path.init(args.dataset)
@@ -97,7 +98,7 @@ elif args.cmd == 'trainprep':
     delete_files(path.trainB)
     imageslicer.sliceall(path.rawB, save_path=path.trainB, nTiles=args.tiles, fit_size=(args.size, args.size), prefix="img%05d")
 elif args.cmd == 'train':
-    os.system("python train.py --dataset=%s --load_size=%s --crop_size=%s" % (args.dataset, args.size, args.size))
+    os.system("python train.py --dataset=%s --load_size=%s --crop_size=%s --epoch=%s" % (args.dataset, args.size, args.size, args.epoch))
 elif args.cmd == 'testprep':
     delete_files(path.testA)
     imageslicer.sliceall(path.rawA, save_path=path.testA, nTiles=args.tiles, fit_size=(args.size, args.size), prefix="img%05d")

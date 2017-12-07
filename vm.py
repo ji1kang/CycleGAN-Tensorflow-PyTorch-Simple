@@ -89,6 +89,14 @@ def update_remote_ssh_ip(host, host_entry, ip):
     call_remote_python(host, pycode)
     os.system('ssh %s "rm %s; rm %sc"' % (host, __file__, __file__))
 
+def call_remote(host, command):
+    """Execute remote command.
+    NOTE: Only use single quotes in command."""
+    cmd = 'ssh %s "%s"' % (host, command)
+    print "******************************************************************"
+    print cmd
+    os.system(cmd)
+
 def call_remote_python(host, pythoncode):
     """Execute remote python.
     NOTE: Only use single quotes in pythoncode."""
