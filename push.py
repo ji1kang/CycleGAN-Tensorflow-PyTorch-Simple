@@ -3,7 +3,8 @@ import os, argparse
 import path, vm
 
 
-datasets = ['cats2clouds', 'porn2figure', 'porn2flora', 'porn2miami', 'porn2schiele', 'selfies2astro', 'selfies2illust', 'selfies2renaiss']
+# datasets = ['cats2clouds', 'porn2figure', 'porn2flora', 'porn2miami', 'porn2schiele', 'selfies2astro', 'selfies2illust', 'selfies2renaiss']
+datasets = ['cats2clouds']
 
 
 def command(txt):
@@ -27,13 +28,13 @@ if __name__ == "__main__":
         path.init(ds)
 
         # mkdir datasets
-        command('ssh %s "mkdir -p /home/stefan/git/%s/%s"'\
-                % (INSTANCE, path.GIT_REPO_NAME, path.dataset))
+        command('ssh %s "mkdir -p /home/stefan/git/%s/%s; mkdir -p /home/stefan/git/%s/%s;"'\
+                % (INSTANCE, path.GIT_REPO_NAME, path.trainA, path.GIT_REPO_NAME, path.trainB))
 
         # trainA
-        command("""rsync -rcPz -e ssh --delete %s %s:/home/stefan/git/%s/%s/""" \
-                % (path.trainA, INSTANCE, path.GIT_REPO_NAME, path.dataset))
+        command("""rsync -rcPz -e ssh --delete %s/ %s:/home/stefan/git/%s/%s/""" \
+                % (path.trainA, INSTANCE, path.GIT_REPO_NAME, path.trainA))
 
         # trainB
-        command("""rsync -rcPz -e ssh --delete %s %s:/home/stefan/git/%s/%s/""" \
-                % (path.trainB, INSTANCE, path.GIT_REPO_NAME, path.dataset))
+        command("""rsync -rcPz -e ssh --delete %s/ %s:/home/stefan/git/%s/%s/""" \
+                % (path.trainB, INSTANCE, path.GIT_REPO_NAME, path.trainB))

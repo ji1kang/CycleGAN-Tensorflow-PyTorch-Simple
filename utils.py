@@ -47,6 +47,7 @@ def mkdir(paths):
 
 def load_checkpoint(checkpoint_dir, sess, saver):
     print(" [*] Loading checkpoint...")
+    print("     %s" % (checkpoint_dir))
     ckpt = tf.train.get_checkpoint_state(checkpoint_dir)
     if ckpt and ckpt.model_checkpoint_path:
         ckpt_name = os.path.basename(ckpt.model_checkpoint_path)

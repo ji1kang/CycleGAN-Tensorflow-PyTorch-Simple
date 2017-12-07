@@ -99,7 +99,7 @@ def call_remote_cmd_in_tmux(host, cmd, session_name=None):
     """Execute remote command inside tmux.
     NOTE: Only use single quotes in cmd."""
     if session_name:
-        os.system('ssh %s "tmux new -s %s -d \\\"%s\\\""' % (host, session_name, cmd))
+        os.system('ssh %s -t "tmux new -s %s -d \\\"%s\\\""' % (host, session_name, cmd))
     else:
         os.system('ssh %s "tmux new-session -d \\\"%s\\\""' % (host, cmd))
 
