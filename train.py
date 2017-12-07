@@ -116,8 +116,9 @@ summary_writer = tf.summary.FileWriter('./summaries/' + dataset, sess.graph)
 ckpt_dir = './checkpoints/' + dataset
 utils.mkdir(ckpt_dir + '/')
 
+saver = tf.train.Saver(max_to_keep=1)
 # saver = tf.train.Saver(max_to_keep=5)
-saver = tf.train.Saver(var_list=tf.trainable_variables(), max_to_keep=1)
+# saver = tf.train.Saver(var_list=tf.trainable_variables(), max_to_keep=1)
 ckpt_path = utils.load_checkpoint(ckpt_dir, sess, saver)
 if ckpt_path is None:
     sess.run(tf.global_variables_initializer())
@@ -160,7 +161,7 @@ try:
             print("Epoch: (%3d) (%5d/%5d)" % (epoch, it_epoch, batch_epoch))
 
         # save
-        if (it + 1) % 100 == 0:
+        if (it + 1) % 200 == 0:
             save_path = saver.save(sess, '%s/Epoch_(%d)_(%dof%d).ckpt' % (ckpt_dir, epoch, it_epoch, batch_epoch))
             print('Model saved in file: % s' % save_path)
 
