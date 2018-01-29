@@ -17,11 +17,6 @@ import vm
 import imageslicer
 
 
-VIDEO_A = "../../../../a-space-odyssey-hd.mp4"
-VIDEO_B = "../../../../ghost-in-the-shell.mp4"
-
-
-
 
 def video_extract(video_path, out_path, fps, size=256, intime="", duration="", pattern="img%05d.jpg"):
     cwd = os.getcwd()
@@ -71,19 +66,27 @@ parser.add_argument("--size", dest="size", type=int, default=256)
 parser.add_argument("--tiles", dest="tiles", type=int, default=1)
 parser.add_argument("--fps", dest="fps", type=float, default=24)
 parser.add_argument('--epoch', dest='epoch', type=int, default=200, help='# of epoch')
+parser.add_argument('--videoA', dest='videoA', default='a-space-odyssey-hd.mp4', help='video to extract training images A')
+parser.add_argument('--videoB', dest='videoB', default='ghost-in-the-shell.mp4', help='video to extract training images B')
+parser.add_argument('--videoA_in', dest='videoA_in', default='00:00:00', help='intime')
+parser.add_argument('--videoB_in', dest='videoB_in', default='00:00:00', help='intime')
+parser.add_argument('--videoA_dur', dest='videoA_dur', default='00:00:10', help='duration')
+parser.add_argument('--videoB_dur', dest='videoB_dur', default='00:00:10', help='duration')
+parser.add_argument('--videoA_fps', dest='videoA_fps', default='1', help='at what rate to extract frames in Hz')
+parser.add_argument('--videoB_fps', dest='videoB_fps', default='1', help='at what rate to extract frames in Hz')
 args = parser.parse_args()
 
 path.init(args.dataset)
 
 
 if args.cmd == 'extract':
-    delete_files(path.rawA)
-    video_extract(VIDEO_A, path.rawA, 24, size=args.size, intime="00:50:00", duration="00:04:40")
+    # delete_files(path.rawA)
+    # video_extract(VIDEO_A, path.rawA, 24, size=args.size, intime="00:50:00", duration="00:04:40")
 
-    # delete_files(path.trainA)
-    # delete_files(path.trainB)
-    # video_extract(VIDEO_A, path.trainA, TRAINGVIDEO_FPS, size=args.size, intime="00:20:00", duration="01:00:00")
-    # video_extract(VIDEO_B, path.trainB, TRAINGVIDEO_FPS, size=args.size, intime="00:15:00", duration="01:00:00")
+    delete_files(path.trainA)
+    delete_files(path.trainB)
+    video_extract(os.path.join('../../../../', args.videoA), path.trainA, args.videoA_fps, size=args.size, intime=args.videoA_in, duration=args.videoA_dur)
+    video_extract(os.path.join('../../../../', args.videoB), path.trainB, args.videoB_fps, size=args.size, intime=args.videoB_in, duration=args.videoB_dur)
 
     # for img in glob.glob(os.path.join(path.trainA,"*.jpg")):
     #     shutil.copy(img, path.rawA)
@@ -102,6 +105,8 @@ elif args.cmd == 'train':
 elif args.cmd == 'testprep':
     delete_files(path.testA)
     imageslicer.sliceall(path.rawA, save_path=path.testA, nTiles=args.tiles, fit_size=(args.size, args.size), prefix="img%05d")
+    delete_files(path.testB)
+    imageslicer.sliceall(path.rawB, save_path=path.testB, nTiles=args.tiles, fit_size=(args.size, args.size), prefix="img%05d")
     # shutil.copy(path.trainB, path.testB)
 elif args.cmd == 'test':
     delete_files(path.outA)
@@ -118,7 +123,7 @@ elif args.cmd == 'pulldataset':
     print(cmd)
     os.system(cmd)
 elif args.cmd == 'pullmodel':
-    """Pull trained model from GPU_INSTANCE."""
+    os.system("mkdir -p %s" % (path.model))
     cmd = """rsync -rcPz -e ssh --delete %s:/home/stefan/git/%s/%s/ %s""" % \
           (vm.GPU_INSTANCE, path.GIT_REPO_NAME, path.model, path.model)
     print(cmd)

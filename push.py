@@ -4,6 +4,7 @@ import path, vm
 
 
 # datasets = ['cats2clouds', 'porn2figure', 'porn2flora', 'porn2miami', 'porn2schiele', 'selfies2astro', 'selfies2illust', 'selfies2renaiss']
+# datasets = [porn2flora', 'porn2miami','selfies2astro','selfies2renaiss']
 datasets = ['cats2clouds']
 
 

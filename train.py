@@ -116,7 +116,7 @@ summary_writer = tf.summary.FileWriter('./summaries/' + dataset, sess.graph)
 ckpt_dir = './checkpoints/' + dataset
 utils.mkdir(ckpt_dir + '/')
 
-saver = tf.train.Saver(max_to_keep=1)
+saver = tf.train.Saver(max_to_keep=2)
 # saver = tf.train.Saver(max_to_keep=5)
 # saver = tf.train.Saver(var_list=tf.trainable_variables(), max_to_keep=1)
 ckpt_path = utils.load_checkpoint(ckpt_dir, sess, saver)
