@@ -92,6 +92,13 @@ if args.cmd == 'extract':
     #     shutil.copy(img, path.rawA)
     # for img in glob.glob(os.path.join(path.trainB,"*.jpg")):
     #     shutil.copy(img, path.rawB)
+
+elif args.cmd == 'extract_test':
+    delete_files(path.testA)
+    delete_files(path.testB)
+    video_extract(os.path.join('../../../../', args.videoA), path.testA, args.videoA_fps, size=args.size, intime=args.videoA_in, duration=args.videoA_dur)
+    video_extract(os.path.join('../../../../', args.videoB), path.testB, args.videoB_fps, size=args.size, intime=args.videoB_in, duration=args.videoB_dur)
+
 elif args.cmd == 'cleanraw':
     enumerate_files(path.rawA)
     enumerate_files(path.rawB)
